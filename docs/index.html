@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a1020">
+  <meta name="description" content="VPN Control — демонстрационный личный кабинет VPN-подписки.">
+  <title>VPN Control — личный кабинет</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="./config.js"></script>
+  <style>
+    :root{color-scheme:dark;--bg:#090f1e;--panel:#101a2e;--panel2:#14213a;--line:#243451;--muted:#93a3bc;--text:#eef4ff;--blue:#6c8cff;--cyan:#55d6d0;--green:#4ed6a0;--danger:#ff7890}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(1000px 520px at 80% -10%,#172b51 0%,transparent 58%),var(--bg);font-family:Inter,system-ui,sans-serif;color:var(--text);min-height:100vh}
+    button{font:inherit;cursor:pointer}a{color:inherit;text-decoration:none}.shell{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100vh;max-width:1500px;margin:auto}
+    aside{border-right:1px solid var(--line);padding:28px 18px;display:flex;flex-direction:column;gap:32px;background:rgba(8,14,27,.72)}
+    .brand{display:flex;align-items:center;gap:12px;padding:0 10px}.brand-mark{width:38px;height:38px;border-radius:13px;background:linear-gradient(135deg,#7592ff,#54d6d0);display:grid;place-items:center;color:#061322;font-weight:900;font-size:19px;box-shadow:0 8px 30px #6c8cff44}.brand-name{font-size:15px;font-weight:800;letter-spacing:.09em}.brand-sub{font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:.16em}
+    .nav-label{font-size:10px;text-transform:uppercase;color:#71839e;letter-spacing:.16em;padding:0 12px 9px}.nav{display:grid;gap:7px}.nav button{display:flex;align-items:center;gap:12px;padding:12px 13px;border:1px solid transparent;border-radius:12px;background:transparent;color:#aab8ce;text-align:left;font-weight:600;font-size:13px}.nav button.active,.nav button:hover{background:#172743;border-color:#2a4168;color:#fff}.nav .ico{width:20px;text-align:center;font-size:16px}
+    .side-bottom{margin-top:auto}.support{padding:15px;border:1px solid var(--line);background:linear-gradient(145deg,#152440,#101a2e);border-radius:16px}.support strong{font-size:13px}.support p{font-size:11px;color:var(--muted);line-height:1.6;margin:8px 0 13px}.tiny-btn{width:100%;border:1px solid #334c76;background:#1b3152;color:#dce8ff;border-radius:10px;padding:10px;font-size:11px;font-weight:700}
+    main{padding:32px clamp(18px,4vw,54px) 54px;min-width:0}.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;gap:14px}.eyebrow{font-size:11px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}.top-title{font-size:23px;font-weight:800;margin-top:6px}.profile{display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid var(--line);border-radius:30px;background:#101a2e;font-size:12px}.avatar{width:29px;height:29px;display:grid;place-items:center;border-radius:50%;background:#304773;font-weight:800}
+    .demo-banner{padding:12px 15px;border-radius:13px;border:1px solid #695b2d;background:linear-gradient(90deg,#302819aa,#1c2634aa);color:#f8df9a;font-size:12px;line-height:1.55;display:flex;gap:10px;align-items:flex-start;margin-bottom:22px}.demo-banner b{color:#ffedbd}
+    .hero{position:relative;overflow:hidden;border:1px solid #34496e;border-radius:22px;padding:26px;background:linear-gradient(112deg,#1b3155 0%,#172845 48%,#123b49 100%);display:flex;justify-content:space-between;align-items:center;gap:20px;min-height:192px}.hero:after{content:"";position:absolute;width:250px;height:250px;border:1px solid #ffffff12;border-radius:50%;right:8%;top:-120px;box-shadow:0 0 0 28px #ffffff08,0 0 0 58px #ffffff05}.hero-copy{position:relative;z-index:1;max-width:570px}.pill{display:inline-flex;align-items:center;gap:7px;border:1px solid #6c94bd66;color:#bde4ed;background:#0f344c88;padding:6px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.08em}.hero h1{font-size:clamp(22px,3vw,31px);margin:15px 0 8px;letter-spacing:-.04em}.hero p{color:#b9c9df;font-size:12px;line-height:1.7;margin:0;max-width:510px}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:17px}.primary,.secondary{border:0;border-radius:11px;padding:12px 15px;font-size:12px;font-weight:800}.primary{background:linear-gradient(120deg,#8da6ff,#5bd9d1);color:#091426;box-shadow:0 8px 22px #68bdc333}.secondary{background:#dbe8ff12;border:1px solid #c6ddff30;color:#eaf2ff}.hero-art{z-index:1;width:112px;height:112px;border-radius:30px;display:grid;place-items:center;background:linear-gradient(145deg,#ffffff20,#ffffff08);border:1px solid #ffffff27;font-size:48px;box-shadow:inset 0 1px #ffffff22;flex:none}
+    .section-head{display:flex;justify-content:space-between;align-items:end;margin:28px 0 13px;gap:12px}.section-head h2{font-size:16px;margin:0}.section-head span{font-size:11px;color:var(--muted)}.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.metric,.card{background:linear-gradient(145deg,#121e34,#0e182a);border:1px solid var(--line);border-radius:17px;padding:17px}.metric-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:11px}.metric-icon{width:32px;height:32px;border-radius:10px;background:#263e64;display:grid;place-items:center;font-size:15px}.metric-value{font-size:25px;font-weight:800;margin:15px 0 5px;letter-spacing:-.04em}.metric-note{font-size:10px;color:var(--muted)}.content-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(270px,.8fr);gap:14px}.plan-row{display:flex;justify-content:space-between;align-items:center;gap:10px}.plan-name{font-size:14px;font-weight:800}.plan-desc{font-size:11px;color:var(--muted);margin-top:5px}.status{font-size:10px;border-radius:20px;padding:6px 9px;background:#123e37;color:#75e6b8;border:1px solid #2a745d}.status.off{background:#332b1a;color:#e9d18a;border-color:#6b5931}.progress{height:7px;background:#26334b;border-radius:20px;overflow:hidden;margin:18px 0 8px}.progress>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#6c8cff,#55d6d0);border-radius:20px;transition:width .3s}.small-row{display:flex;justify-content:space-between;color:var(--muted);font-size:10px}.device-list{display:grid;gap:10px;margin-top:15px}.device-item{display:flex;align-items:center;gap:11px;padding:11px;border:1px solid #253650;border-radius:13px;background:#0d1728}.device-icon{width:38px;height:38px;border-radius:12px;background:#203452;display:grid;place-items:center;font-size:18px}.device-info{flex:1;min-width:0}.device-info b{font-size:12px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.device-info small{font-size:10px;color:var(--muted);display:block;margin-top:4px}.device-dot{font-size:9px;color:#9bc9ba}.remove{background:transparent;border:0;color:#8494ad;font-size:16px;padding:6px}.empty{padding:20px;text-align:center;border:1px dashed #31415e;border-radius:13px;color:var(--muted);font-size:11px;line-height:1.7}
+    .page{display:none}.page.active{display:block}.page-title{font-size:23px;font-weight:800;margin:0 0 7px}.page-intro{font-size:12px;color:var(--muted);line-height:1.7;margin:0 0 20px}.node-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.node{display:flex;align-items:center;gap:13px;padding:17px;border:1px solid var(--line);background:var(--panel);border-radius:15px}.flag{font-size:26px}.node-info{flex:1}.node-info b{font-size:12px}.node-info small{display:block;color:var(--muted);font-size:10px;margin-top:5px}.tag{font-size:9px;color:#e8d08d;border:1px solid #6a572e;background:#302918;padding:5px 7px;border-radius:15px}.billing-card{max-width:520px}.price{font-size:31px;font-weight:800;margin:17px 0 4px}.muted{color:var(--muted);font-size:11px;line-height:1.7}.settings-line{display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-bottom:1px solid var(--line);font-size:12px}.settings-line:last-child{border:0}
+    .mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:20;background:#0d1728f2;border-top:1px solid var(--line);padding:8px 5px calc(8px + env(safe-area-inset-bottom));grid-template-columns:repeat(5,1fr);backdrop-filter:blur(16px)}.mobile-nav button{border:0;background:transparent;color:#95a6c0;font-size:9px;display:grid;gap:4px;justify-items:center}.mobile-nav button.active{color:#83dcd6}.mobile-nav span{font-size:17px}
+    .toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);padding:11px 15px;border:1px solid #35527b;background:#172b49;border-radius:12px;font-size:11px;opacity:0;pointer-events:none;transition:.2s;z-index:30;max-width:90%;text-align:center}.toast.show{opacity:1;transform:translate(-50%,0)}dialog{border:1px solid #344968;border-radius:18px;background:#111d32;color:var(--text);padding:22px;width:min(420px,calc(100% - 30px));box-shadow:0 22px 80px #0009}dialog::backdrop{background:#030816c9;backdrop-filter:blur(4px)}dialog h3{margin:0 0 7px;font-size:17px}label{display:block;font-size:11px;color:var(--muted);margin:14px 0 7px}input,select{width:100%;padding:12px;border-radius:10px;border:1px solid #314461;background:#0b1526;color:#fff;font:inherit;font-size:12px;outline:none}.dialog-actions{display:flex;gap:9px;margin-top:18px}.dialog-actions button{flex:1}
+    @media(max-width:900px){.shell{grid-template-columns:210px 1fr}aside{padding:22px 12px}.hero-art{width:88px;height:88px;font-size:38px}.content-grid{grid-template-columns:1fr}}
+    @media(max-width:680px){.shell{display:block}aside{display:none}main{padding:22px 15px 100px}.topbar{margin-bottom:20px}.top-title{font-size:19px}.profile{font-size:10px;padding:6px 9px}.demo-banner{font-size:10px}.hero{padding:20px;min-height:0}.hero-art{display:none}.hero h1{font-size:24px}.hero p{font-size:11px}.metrics{gap:8px;grid-template-columns:repeat(3,minmax(0,1fr))}.metric{padding:12px}.metric-value{font-size:20px}.metric-note{font-size:9px}.metric-top{font-size:9px}.metric-icon{width:27px;height:27px}.node-list{grid-template-columns:1fr}.mobile-nav{display:grid}.section-head{margin-top:23px}.page-title{font-size:21px}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <aside>
+    <div class="brand"><div class="brand-mark">V</div><div><div class="brand-name">VPN CONTROL</div><div class="brand-sub">CLIENT AREA</div></div></div>
+    <div>
+      <div class="nav-label">Рабочая область</div>
+      <nav class="nav">
+        <button class="active" data-page="dashboard"><span class="ico">⌂</span>Обзор</button>
+        <button data-page="devices"><span class="ico">▣</span>Устройства</button>
+        <button data-page="locations"><span class="ico">◎</span>Локации</button>
+        <button data-page="billing"><span class="ico">◇</span>Подписка и оплата</button>
+        <button data-page="settings"><span class="ico">⚙</span>Настройки</button>
+      </nav>
+    </div>
+    <div class="side-bottom support"><strong>Нужна помощь?</strong><p>Напиши в Telegram. Поддержка будет подключена перед запуском сервиса.</p><button class="tiny-btn" onclick="openBot()">Открыть Telegram ↗</button></div>
+  </aside>
+  <main>
+    <header class="topbar"><div><div class="eyebrow">Личный кабинет / VPN</div><div class="top-title" id="greeting">Добро пожаловать</div></div><div class="profile"><div class="avatar">U</div><span id="user-label">DEMO USER</span></div></header>
+    <div class="demo-banner"><span>⚠</span><div><b>ДЕМО-РЕЖИМ.</b> Все данные тестовые. Оплата не списывается, серверы не подключены, а добавленные устройства пока не получают VPN-конфигурации.</div></div>
+
+    <section class="page active" id="page-dashboard">
+      <div class="hero"><div class="hero-copy"><span class="pill">✦ VPN CONTROL · PREVIEW</span><h1>Твоя сеть. Твои правила.</h1><p>Управляй подпиской, устройствами и локациями в одном месте. Сейчас открыт демонстрационный кабинет.</p><div class="hero-actions"><button class="primary" onclick="activateDemo()">Активировать тест на 30 дней</button><button class="secondary" onclick="navigate('devices')">Мои устройства</button></div></div><div class="hero-art">⌁</div></div>
+      <div class="section-head"><h2>Твой аккаунт</h2><span>Обновлено только что</span></div>
+      <div class="metrics">
+        <div class="metric"><div class="metric-top">Подписка <span class="metric-icon">✦</span></div><div class="metric-value" id="days-metric">—</div><div class="metric-note" id="sub-note">Не активна</div></div>
+        <div class="metric"><div class="metric-top">Устройства <span class="metric-icon">▣</span></div><div class="metric-value" id="devices-metric">0/5</div><div class="metric-note">Лимит демо-аккаунта</div></div>
+        <div class="metric"><div class="metric-top">Локации <span class="metric-icon">◎</span></div><div class="metric-value">5</div><div class="metric-note">Демо-карточки регионов</div></div>
+      </div>
+      <div class="section-head"><h2>Подписка</h2><span id="sub-status-label">Ожидает активации</span></div>
+      <div class="content-grid">
+        <div class="card"><div class="plan-row"><div><div class="plan-name" id="plan-name">Нет активной подписки</div><div class="plan-desc" id="plan-desc">Активируй тестовый период для проверки кабинета</div></div><span class="status off" id="status-badge">Не активна</span></div><div class="progress"><i id="progress-bar"></i></div><div class="small-row"><span id="start-date">Начало: —</span><span id="end-date">До: —</span></div></div>
+        <div class="card"><div class="plan-name">Быстрые действия</div><div class="device-list"><button class="secondary" onclick="navigate('locations')">🌍 Посмотреть локации</button><button class="secondary" onclick="navigate('billing')">💳 Тариф и оплата</button></div></div>
+      </div>
+      <div class="section-head"><h2>Последние устройства</h2><span><a href="#" onclick="navigate('devices');return false;">Все устройства →</a></span></div>
+      <div class="card"><div class="device-list" id="home-devices"></div></div>
+    </section>
+
+    <section class="page" id="page-devices">
+      <h1 class="page-title">Мои устройства</h1><p class="page-intro">Каждое устройство в будущем получит отдельный клиентский профиль. Сейчас здесь сохраняются только демонстрационные записи.</p>
+      <div class="card"><div class="plan-row"><div><div class="plan-name">Список устройств</div><div class="plan-desc" id="device-counter">0 из 5 добавлено</div></div><button class="primary" onclick="showAddDevice()">＋ Добавить</button></div><div class="device-list" id="all-devices"></div></div>
+    </section>
+
+    <section class="page" id="page-locations">
+      <h1 class="page-title">VPN-локации</h1><p class="page-intro">Предварительный список регионов для будущих VPS. Эти карточки не означают, что VPN-серверы уже куплены или работают.</p>
+      <div class="node-list" id="node-list"></div>
+    </section>
+
+    <section class="page" id="page-billing">
+      <h1 class="page-title">Подписка и оплата</h1><p class="page-intro">В демоверсии можно проверить сценарий активации. Настоящий платёжный провайдер пока не подключён.</p>
+      <div class="card billing-card"><span class="pill">DEMO PLAN</span><div class="price">0 ₽ <small class="muted">/ тест</small></div><div class="plan-name">Demo Premium · 30 дней</div><p class="muted">Это не коммерческий тариф. Кнопка ниже изменит только демонстрационное состояние аккаунта и не спишет деньги.</p><button class="primary" style="width:100%;margin-top:12px" onclick="activateDemo()">Активировать демо-подписку</button></div>
+      <div class="card billing-card" style="margin-top:13px"><div class="plan-name">История операций</div><p class="muted" id="payment-history">Операций пока нет.</p></div>
+    </section>
+
+    <section class="page" id="page-settings">
+      <h1 class="page-title">Настройки</h1><p class="page-intro">Параметры демонстрационного кабинета.</p>
+      <div class="card"><div class="settings-line"><span>Режим</span><b>DEMO</b></div><div class="settings-line"><span>Максимум устройств</span><b>5</b></div><div class="settings-line"><span>Подключение API</span><b id="api-status">Локальный предпросмотр</b></div><div class="settings-line"><span>Telegram Mini App</span><b id="tg-status">Не открыт из Telegram</b></div><div class="settings-line"><span>Версия</span><b>0.1.0</b></div></div>
+    </section>
+  </main>
+</div>
+<nav class="mobile-nav">
+  <button class="active" data-page="dashboard"><span>⌂</span>Обзор</button>
+  <button data-page="devices"><span>▣</span>Устройства</button>
+  <button data-page="locations"><span>◎</span>Локации</button>
+  <button data-page="billing"><span>◇</span>Оплата</button>
+  <button data-page="settings"><span>⚙</span>Ещё</button>
+</nav>
+<div class="toast" id="toast"></div>
+<dialog id="device-dialog"><h3>Добавить устройство</h3><p class="muted">Создаётся только запись в демо-кабинете, не VPN-ключ.</p><label for="device-name">Название</label><input id="device-name" maxlength="40" placeholder="Например, Samsung Galaxy"><label for="device-platform">Платформа</label><select id="device-platform"><option>Android</option><option>iOS</option><option>Windows</option><option>macOS</option><option>Linux</option><option>Другое</option></select><div class="dialog-actions"><button class="secondary" onclick="closeDialog()">Отмена</button><button class="primary" onclick="saveDevice()">Добавить</button></div></dialog>
+<script>
+const cfg=window.VPN_CONFIG||{apiBase:"",botUsername:"",demoMode:true};
+const tg=window.Telegram?.WebApp;
+if(tg){tg.ready();tg.expand();}
+const $=id=>document.getElementById(id);
+const nodes=[["🇩🇪","Германия","Frankfurt"],["🇳🇱","Нидерланды","Amsterdam"],["🇫🇮","Финляндия","Helsinki"],["🇵🇱","Польша","Warsaw"],["🇺🇸","США","New York"]];
+let state={subscription:null,devices:[],payments:[]};
+let apiConnected=false;
+function loadLocal(){try{const x=JSON.parse(localStorage.getItem("vpnDemoState")||"{}");state={...state,...x};}catch(e){}}
+function saveLocal(){localStorage.setItem("vpnDemoState",JSON.stringify(state));}
+function toast(message){const el=$("toast");el.textContent=message;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2300);}
+function daysLeft(){if(!state.subscription)return null;const end=new Date(state.subscription.expires_at).getTime();return Math.max(0,Math.ceil((end-Date.now())/86400000));}
+async function api(path,opts={}){const initData=tg?.initData||"";if(!cfg.apiBase||!initData)return null;const res=await fetch(cfg.apiBase.replace(/\/$/,"")+path,{...opts,headers:{"Content-Type":"application/json","X-Telegram-Init-Data":initData,...(opts.headers||{})}});if(!res.ok){let msg="API error";try{msg=(await res.json()).detail||msg}catch(e){}throw new Error(msg)}return res.json();}
+async function refresh(){loadLocal();if(cfg.apiBase&&tg?.initData){try{const remote=await api("/api/account");state.subscription=remote.subscription;state.devices=remote.devices||[];apiConnected=true;}catch(e){apiConnected=false;toast("API пока недоступен — показываю демо-данные");}}render();}
+function render(){const days=daysLeft();$("days-metric").textContent=days===null?"—":days+" дн."; $("sub-note").textContent=days===null?"Не активна":days>0?"Демо-подписка активна":"Срок завершён";$("devices-metric").textContent=state.devices.length+"/5";$("device-counter").textContent=state.devices.length+" из 5 добавлено";$("api-status").textContent=apiConnected?"Подключён":"Локальный предпросмотр";$("tg-status").textContent=tg?"Открыт в Telegram":"Браузер";
+const active=days!==null&&days>0;$("plan-name").textContent=active?(state.subscription.plan||"Demo Premium"):"Нет активной подписки";$("plan-desc").textContent=active?"Демо-период действует":"Активируй тестовый период для проверки кабинета";$("status-badge").textContent=active?"Активна":"Не активна";$("status-badge").className="status"+(active?"":" off");$("sub-status-label").textContent=active?"Демо активна":"Ожидает активации";$("progress-bar").style.width=active?Math.min(100,days/30*100)+"%":"0%";$("end-date").textContent="До: "+(active?new Date(state.subscription.expires_at).toLocaleDateString("ru-RU"):"—");$("start-date").textContent="Период: "+(active?"30 дней":"—");$("payment-history").textContent=state.payments.length?state.payments.join(" · "):"Операций пока нет.";
+const html=state.devices.length?state.devices.map(d=>deviceHTML(d)).join(""):'<div class="empty">📱<br>Пока нет устройств.<br>Нажми «Добавить», чтобы проверить управление.</div>';$("home-devices").innerHTML=html;$("all-devices").innerHTML=html;
+$("greeting").textContent=tg?.initDataUnsafe?.user?.first_name?("Привет, "+tg.initDataUnsafe.user.first_name):"Добро пожаловать";$("user-label").textContent=tg?.initDataUnsafe?.user?.username?"@"+tg.initDataUnsafe.user.username:"DEMO USER";
+$("node-list").innerHTML=nodes.map(n=>'<div class="node"><div class="flag">'+n[0]+'</div><div class="node-info"><b>'+n[1]+'</b><small>'+n[2]+' · демо-локация</small></div><span class="tag">PREVIEW</span></div>').join("");}
+function deviceHTML(d){return '<div class="device-item"><div class="device-icon">'+(d.platform==="iOS"?"":d.platform==="Windows"?"▰":d.platform==="Android"?"▣":"▱")+'</div><div class="device-info"><b>'+escapeHTML(d.name)+'</b><small>'+escapeHTML(d.platform)+' · демо-запись</small></div><span class="device-dot">Добавлено</span><button class="remove" title="Удалить" onclick="removeDevice(\''+d.id+'\')">×</button></div>';}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function navigate(page){document.querySelectorAll(".page").forEach(el=>el.classList.remove("active"));$("page-"+page).classList.add("active");document.querySelectorAll("[data-page]").forEach(el=>el.classList.toggle("active",el.dataset.page===page));window.scrollTo({top:0,behavior:"smooth"});}
+document.querySelectorAll("[data-page]").forEach(el=>el.addEventListener("click",()=>navigate(el.dataset.page)));
+function showAddDevice(){$("device-name").value="";$("device-dialog").showModal();}
+function closeDialog(){$("device-dialog").close();}
+async function saveDevice(){const name=$("device-name").value.trim(),platform=$("device-platform").value;if(name.length<2){toast("Введи название устройства");return;}if(state.devices.length>=5){toast("Достигнут лимит в 5 устройств");return;}try{const remote=await api("/api/devices",{method:"POST",body:JSON.stringify({name,platform})});if(remote){state.devices=remote.account.devices;}else{state.devices.push({id:"local-"+Date.now(),name,platform,created_at:new Date().toISOString()});saveLocal();}}catch(e){toast(e.message);return;}closeDialog();render();toast("Демо-устройство добавлено");}
+async function removeDevice(id){try{const remote=await api("/api/devices/"+encodeURIComponent(id),{method:"DELETE"});if(remote){state.devices=remote.account.devices;}else{state.devices=state.devices.filter(d=>d.id!==id);saveLocal();}}catch(e){toast(e.message);return;}render();toast("Устройство удалено");}
+async function activateDemo(){try{const remote=await api("/api/demo/activate",{method:"POST",body:"{}"});if(remote){state.subscription=remote.account.subscription;}}catch(e){toast(e.message);return;}if(!(cfg.apiBase&&tg?.initData)){const now=Date.now();state.subscription={plan:"Demo Premium",status:"active",expires_at:new Date(now+30*86400000).toISOString(),is_demo:1};state.payments.unshift("Демо-активация · 0 ₽");saveLocal();}render();toast("Демо-подписка активирована — без оплаты");}
+function openBot(){if(cfg.botUsername){const url="https://t.me/"+cfg.botUsername.replace(/^@/,"");if(tg?.openTelegramLink)tg.openTelegramLink(url);else window.open(url,"_blank","noopener");}else{toast("Укажи botUsername в docs/config.js после создания бота");}}
+refresh();
+</script>
+</body>
+</html>

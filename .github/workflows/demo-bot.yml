@@ -1,0 +1,39 @@
+name: Run Telegram demo bot for 30 minutes
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vpn-demo-bot
+  cancel-in-progress: true
+
+jobs:
+  run-demo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+      BOT_RUN_SECONDS: "1800"
+      WEB_APP_URL: "https://kirovo389-creator.github.io/VPN-bot/"
+      DB_PATH: "/tmp/vpn_demo.sqlite3"
+      DEMO_MODE: "true"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip && pip install -r requirements.txt
+      - name: Check bot secret
+        run: |
+          if [ -z "$BOT_TOKEN" ]; then
+            echo "::error::Missing BOT_TOKEN secret. Add a NEW token in Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+      - name: Start bot (30-minute test)
+        run: python bot.py
